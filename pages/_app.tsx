@@ -1,8 +1,20 @@
-import '../styles/globals.css'
+import '../styles/antd-theme.less'
 import type { AppProps } from 'next/app'
+import { NextPage } from 'next'
+import { ReactElement, ReactNode } from 'react'
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode
 }
 
-export default MyApp
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
+
+
+export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  // Use the layout define at the page level, if available
+  const getLayout = Component.getLayout ?? ((page) => page)
+
+  return getLayout(<Component {...pageProps} />)
+}
